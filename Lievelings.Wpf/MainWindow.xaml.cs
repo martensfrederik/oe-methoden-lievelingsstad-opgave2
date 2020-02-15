@@ -18,6 +18,21 @@ namespace Lievelings.Wpf
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
+    /*Methoden gebruiken van het return type void met parameters
+Maak de volgende methoden die parameters vragen, m.a.w. er wordt een bevel gegeven waarbij er meegegeven wordt waarop de methode zich moet baseren om het bevel uit te voeren.
+
+Methode WijzigBeschikbaarheidTaalKnoppen
+Deze methode zorgt ervoor dat er altijd maar één button beschikbaar (enabled) is. De parameter isNlBeschikbaar duidt aan of de btnNL al dan niet beschikbaar is. Voor de btnENG geldt steeds het tegenovergestelde.
+
+De methode wordt gecalled bij het opstarten (btnENG beschikbaar) en bij btnNL_Click en btnENG_Click.
+
+WijzigZichtbaarheid
+ToonKnoppen en VerbergKnoppen wordt gereduceerd tot één methode.
+
+Deze methode ontvangt een parameter zichtbaarheid van het type Visibility en zal dus de waarde Visibility.Visible of Visibility.Hidden moeten ontvangen.
+
+Verwijder nadien ToonKnoppen en VerbergKnoppen en pas de calls aan.*/
     public partial class MainWindow : Window
     {
         string stad;
@@ -33,11 +48,10 @@ namespace Lievelings.Wpf
             InitializeComponent();
             beginVanDeZin = BeginNed;
         }
-
-        private void VerbergKnoppen()
-        {
-            btnEn.Visibility = Visibility.Hidden;
-            btnNl.Visibility = Visibility.Hidden;
+        void WijzigBeschikaarheidTaalKnoppen(bool isBtnNederlandsBeschikbaar) {
+            btnNl.IsEnabled = isBtnNederlandsBeschikbaar;
+            // ! verandert een true in false in dit geval
+            btnEn.IsEnabled = !isBtnNederlandsBeschikbaar;
         }
 
         private void VulLstSteden()
@@ -48,12 +62,21 @@ namespace Lievelings.Wpf
             lstSteden.Items.Add("Gent");
             lstSteden.Items.Add("Hasselt");
         }
+        void WijzigZichtbaarheidTaalKnoppen(Visibility zichtbaarheid) {
 
+            btnEn.Visibility = zichtbaarheid;
+            btnNl.Visibility = zichtbaarheid;
+        }
+        /*private void VerbergKnoppen()
+        {
+            btnEn.Visibility = Visibility.Hidden;
+            btnNl.Visibility = Visibility.Hidden;
+        }
         private void ToonKnoppen()
         {
             btnEn.Visibility = Visibility.Visible;
             btnNl.Visibility = Visibility.Visible;
-        }
+        }*/
 
         private void ToonEngelstaligeOpschriften()
         {
@@ -76,11 +99,13 @@ namespace Lievelings.Wpf
         private void btnEn_Click(object sender, RoutedEventArgs e)
         {
             ToonEngelstaligeOpschriften();
+            WijzigBeschikaarheidTaalKnoppen(true);
         }
 
         private void btnNl_Click(object sender, RoutedEventArgs e)
         {
             ToonNederlandstaligeOpschriften();
+            WijzigBeschikaarheidTaalKnoppen(false);
         }
         
         private void lstSteden_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -88,14 +113,15 @@ namespace Lievelings.Wpf
             stad = lstSteden.SelectedItem.ToString();
             lblLievelingsStad.Content = $"{beginVanDeZin}{stad}";
 
-            ToonKnoppen();
-        }
+            WijzigZichtbaarheidTaalKnoppen(Visibility.Visible);
+        }3
 
         private void wndMainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             VulLstSteden();
 
-            VerbergKnoppen();
+            WijzigZichtbaarheidTaalKnoppen(Visibility.Hidden);
+            WijzigBeschikaarheidTaalKnoppen(false);
 
             Title = TitelNed;
         }
